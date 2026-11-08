@@ -1,14 +1,3 @@
--- =====================================================================
--- ISM Digital Museum — Анхны өгөгдөл (seed)
--- schema.sql, policies.sql, storage.sql-ийн дараа ажиллуулна.
---
--- Эх сурвалж: ufe.edu.mn, online.ufe.edu.mn (Moodle хичээлийн жагсаалт),
--- repository.ufe.edu.mn, 100.ufe.mn, mn.wikipedia.org (2026 оны 11-р сард цуглуулсан).
--- ※ гэж тэмдэглэсэн мөрийн огноо / албан тушаалыг тэнхимээс баталгаажуулж засна уу.
--- Багш нарын зургийг ЗӨВШӨӨРӨЛ авсны дараа л Storage-д оруулна (photo_url хоосон үлдээв).
--- =====================================================================
-
--- ---------- Ангилал ----------
 insert into public.exhibition_categories (name, description) values
   ('Вэб аппликейшн',            'Вэб суурьтай систем, сайт, платформ'),
   ('Мобайл аппликейшн',         'iOS / Android аппликейшн'),
@@ -19,7 +8,6 @@ insert into public.exhibition_categories (name, description) values
   ('Түүхэн үзмэр',              'Тэнхимийн түүхэнд холбогдох эд зүйл, баримт')
 on conflict (name) do nothing;
 
--- ---------- Түүхийн үе шатууд (ISM Time Machine) ----------
 insert into public.history_milestones (year, era, title, description, source_url, image_url) values
   (1924, 'Үүсэл', 'СЭЗИС "Гаалийн түр сургууль" нэрээр байгуулагдав',
    'Монгол Улсын Сангийн яамны дэргэд 1924 оны 6-р сард байгуулагдсан сургууль нь өнөөгийн Санхүү эдийн засгийн их сургуулийн эх үүсвэр юм.',
@@ -52,8 +40,6 @@ insert into public.history_milestones (year, era, title, description, source_url
    'Гаалийн түр сургуулиас эхэлсэн түүхийн 100 жилийн ойг тэмдэглэв.',
    'https://100.ufe.mn/contact', null);
 
--- ---------- Багш нар ----------
--- Нэр, хичээлийг online.ufe.edu.mn-ийн хичээлийн жагсаалтаас авсан.
 insert into public.teachers (name, position, courses, bio, sort_order) values
   ('Н.Саранчимэг', 'Тэнхимийн эрхлэгч ※',
    array['ISM435 Мэдээллийн системийн аудит','ISM221 Мэдээллийн системийн үндэс','DBM121 Өгөгдлийн сангийн үндэс','ISPI332 Мэргэжлийн дадлага'],
@@ -99,11 +85,6 @@ insert into public.events (title, event_date, event_type, description, cover_ima
    'Тэнхимийн ахлах багш Ш.Ганболд олимпиадын шүүгчээр оролцсон. ※ Огноог шалгаж засна уу.',
    null, null);
 
--- Instagram / Facebook / YouTube постыг embed хийхдээ постын холбоосыг social_posts-д нэмнэ.
--- (Албан ёсны сувгууд: facebook.com/ufe.edu.mn · instagram.com/ufe.edu.mn · youtube.com/@ufemedia)
--- Жишээ:
---   update public.events set social_posts = array['https://www.instagram.com/p/XXXXXXXX/']
---   where title like 'Оюутны бүтээлийн уралдаан%';
 
 -- ---------- Архивын үзмэрүүд (бүртгэлгүй зохиогч → creator_name) ----------
 insert into public.exhibits (title, description, category_id, technology_stack, year_created, creator_name, demo_url, status)
@@ -130,15 +111,13 @@ values
    (select id from public.exhibition_categories where name = 'Вэб аппликейшн'),
    array['React','JavaScript','Supabase','PostgreSQL'], 2026, 'ISM оюутан', null, 'published');
 
--- ---------- Зургууд (Time Machine + үзэсгэлэн) ----------
--- migration_004_images.sql-ийн агуулгатай ижил: зураггүй мөрөнд чимэглэл зураг онооно.
--- Түүхийн үе шат → Time Machine-ий слайд
+
 update public.history_milestones m
 set image_url = '/museum/' || m.year || '.svg'
 where m.image_url is null
   and m.year in (1924, 1964, 1992, 2005, 2010, 2012, 2015, 2019, 2024);
 
--- Үзэсгэлэнгийн үзмэрүүд
+
 update public.exhibits set image_url = '/museum/1964.svg'
 where image_url is null and title = '1964 оны тооцоолох машины кабинет';
 update public.exhibits set image_url = '/museum/exhibit-internship.svg'
@@ -150,7 +129,7 @@ where image_url is null and title like 'Байгууллагын мэдээлл�
 update public.exhibits set image_url = '/museum/exhibit-museum.svg'
 where image_url is null and title = 'ISM Digital Museum';
 
--- Арга хэмжээний нүүр зураг
+
 update public.events set cover_image_url = '/museum/2024.svg'
 where cover_image_url is null and title like 'СЭЗИС 100 жилийн ой%';
 update public.events set cover_image_url = '/museum/event-competition.svg'
@@ -158,8 +137,4 @@ where cover_image_url is null and title like 'Оюутны бүтээлийн у
 update public.events set cover_image_url = '/museum/event-olympiad.svg'
 where cover_image_url is null and title like 'Менежментийн улсын XV олимпиад%';
 
--- =====================================================================
--- АДМИН ЭРХ ОЛГОХ (өөрөө бүртгүүлсний дараа и-мэйлээ орлуулж ажиллуулна):
---   update public.profiles set role = 'admin'
---   where id = (select id from auth.users where email = 'tanii@email.com');
--- =====================================================================
+
