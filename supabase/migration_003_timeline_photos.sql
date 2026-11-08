@@ -1,9 +1,3 @@
--- =====================================================================
--- Migration 003 — Time Machine-д админ шууд зураг оруулах
--- Өмнөх хувилбарыг суулгасан бол энэ файлыг SQL Editor дээр ажиллуулна.
--- (Шинээр суулгаж буй бол schema.sql + policies.sql-д орсон; давтан ажиллуулсан ч аюулгүй.)
--- =====================================================================
-
 create table if not exists public.timeline_photos (
   id          uuid primary key default gen_random_uuid(),
   year        int not null check (year between 1900 and 2100),
