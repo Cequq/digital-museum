@@ -1,10 +1,3 @@
--- =====================================================================
--- Migration 002 — Зураг ба сошиал эх сурвалж
--- Хэрэв өмнөх хувилбарын schema.sql-ийг АЛЬ ХЭДИЙН ажиллуулсан бол
--- зөвхөн энэ файлыг SQL Editor дээр ажиллуулна. Шинээр суулгаж буй бол
--- schema.sql-д эдгээр багана орсон тул энэ файл шаардлагагүй (давтан ажиллуулсан ч аюулгүй).
--- =====================================================================
-
 alter table public.history_milestones add column if not exists image_url    text;
 alter table public.events             add column if not exists source_url   text;
 alter table public.events             add column if not exists social_posts text[] not null default '{}';
