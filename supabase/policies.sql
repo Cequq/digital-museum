@@ -1,13 +1,3 @@
--- =====================================================================
--- ISM Digital Museum — Row Level Security (RLS) бодлогууд
--- schema.sql-ийн дараа ажиллуулна.
---
--- Зарчим:
---   • Зочин (anon)          — нийтэд нээлттэй өгөгдлийг зөвхөн УНШИНА.
---   • Бүтээгч (authenticated) — зөвхөн ӨӨРИЙН үзмэр, профайлаа засна.
---   • Админ (profiles.role = 'admin') — бүх агуулгыг хянана.
--- =====================================================================
-
 alter table public.profiles              enable row level security;
 alter table public.exhibition_categories enable row level security;
 alter table public.exhibits              enable row level security;
@@ -29,7 +19,6 @@ create policy "profiles: өөрийгөө засах"
   to authenticated
   using (id = auth.uid() or public.is_admin())
   with check (id = auth.uid() or public.is_admin());
--- insert-ийг handle_new_user триггер (security definer) хийнэ; delete нь auth.users-ээс cascade.
 
 -- ---------- exhibits ----------
 drop policy if exists "exhibits: нийтлэгдсэнийг бүгд унших" on public.exhibits;
@@ -60,8 +49,6 @@ create policy "exhibits: эзэмшигч эсвэл админ устгах"
   to authenticated
   using (creator_id = auth.uid() or public.is_admin());
 
--- ---------- Админ удирддаг, бүгд уншдаг хүснэгтүүд ----------
--- exhibition_categories, teachers, events, event_photos, history_milestones, timeline_photos
 do $$
 declare
   t text;
